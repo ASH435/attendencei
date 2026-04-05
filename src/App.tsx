@@ -15,7 +15,8 @@ import {
   Timestamp,
   doc,
   getDoc,
-  setDoc
+  setDoc,
+  serverTimestamp
 } from 'firebase/firestore';
 import { 
   signInWithPopup, 
@@ -342,30 +343,17 @@ function AttendanceApp() {
     try {
       const type = records[0]?.type === 'check-in' ? 'check-out' : 'check-in';
       
-      // Verify with server
-      const response = await fetch('/api/verify-attendance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lat: location.lat,
-          lng: location.lng,
-          type,
-          userId: user.uid,
-          photo: capturedPhoto
-        })
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Verification failed");
+      // Validate geofencing right before Firestore insertion
+      const distance = getDistance(location.lat, location.lng, OFFICE_LOCATION.lat, OFFICE_LOCATION.lng);
+      if (distance > OFFICE_LOCATION.radius) {
+        throw new Error(`Out of range (${Math.round(distance)}m). Please move closer to the office.`);
       }
 
       // Save to Firestore
       try {
         await addDoc(collection(db, 'attendance'), {
           userId: user.uid,
-          timestamp: Timestamp.fromDate(new Date(result.timestamp)),
+          timestamp: serverTimestamp(),
           type,
           location,
           photoUrl: capturedPhoto
@@ -404,8 +392,8 @@ function AttendanceApp() {
       <div className="flex h-screen flex-col items-center justify-center bg-white p-12 text-center">
         <div className="mb-16">
           <Clock className="h-12 w-12 text-forest mx-auto mb-6" />
-          <h1 className="text-4xl font-light tracking-[0.2em] uppercase text-zinc-900 mb-4">Stoic</h1>
-          <p className="text-zinc-400 text-xs tracking-widest uppercase">Scandinavian Minimalist Attendance</p>
+          <h1 className="text-4xl font-light tracking-[0.2em] uppercase text-zinc-900 mb-4">Kripa</h1>
+          <p className="text-zinc-400 text-xs tracking-widest uppercase">Kripa Attendance System</p>
         </div>
         <Button onClick={login} className="w-full max-w-xs">
           Authenticating with Google

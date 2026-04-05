@@ -19,5 +19,5 @@
 }
 
 .no-divider {
-  @apply border-none !important;
+  @apply !border-none;
 }
