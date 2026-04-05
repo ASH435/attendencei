@@ -1,0 +1,8 @@
+{
+  "name": "Attendly - Secure Attendance",
+  "description": "A minimalist, un-cheatable employee attendance tracking app with geofencing and live photo verification.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}

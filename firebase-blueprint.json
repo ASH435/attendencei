@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile information including role and display name.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique identifier for the user." },
+        "displayName": { "type": "string", "description": "The user's full name." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "role": { "type": "string", "enum": ["employee", "admin"], "description": "The user's role in the organization." }
+      },
+      "required": ["uid", "displayName", "email", "role"]
+    },
+    "AttendanceRecord": {
+      "title": "Attendance Record",
+      "description": "A single check-in or check-out event.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The ID of the user who performed the action." },
+        "timestamp": { "type": "string", "format": "date-time", "description": "The server-side timestamp of the event." },
+        "type": { "type": "string", "enum": ["check-in", "check-out"], "description": "The type of action performed." },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          },
+          "required": ["lat", "lng"]
+        },
+        "photoUrl": { "type": "string", "description": "A base64 encoded string of the captured selfie." }
+      },
+      "required": ["userId", "timestamp", "type", "location", "photoUrl"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents."
+    },
+    "/attendance/{recordId}": {
+      "schema": "AttendanceRecord",
+      "description": "Attendance record documents."
+    }
+  }
+}

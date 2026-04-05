@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #446733;
+  --color-primary-dark: #355028;
+  --color-forest: #446733;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased text-zinc-900 bg-white;
+  }
+}
+
+/* Scandinavian Minimalist - Editorial Whitespace */
+.minimalist-container {
+  @apply max-w-lg mx-auto px-8 py-16;
+}
+
+.no-divider {
+  @apply border-none !important;
+}
